@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.util.List;
 import java.util.Scanner;
 
 @SpringBootApplication
@@ -19,6 +18,7 @@ public class TaskMangerCliApplication {
         TasksService tasksService = context.getBean(TasksService.class);
 
         Scanner scanner = new Scanner(System.in);
+        int countCaseOne = 0;
         while (true) {
             System.out.println();
             System.out.println("1. add task");
@@ -69,7 +69,8 @@ public class TaskMangerCliApplication {
                         category = scanner.nextLine();
                     }
 
-                    tasksService.addTask(new Tasks(title, description, category));
+                    tasksService.addTask(++countCaseOne, new Tasks(title, description, category));
+
                     System.out.println("task successfully added");
                     break;
 
@@ -79,10 +80,8 @@ public class TaskMangerCliApplication {
                     try {
                         completeIndex = scanner.nextInt();
                         tasksService.markTaskAsCompleted(completeIndex);
-                        System.out.println("task marked as completed");
                     } catch (Exception e) {
                         System.out.println(e);
-                        System.out.println("index not available");
                     }
                     break;
 
@@ -92,24 +91,13 @@ public class TaskMangerCliApplication {
                     try {
                         removeIndex = scanner.nextInt();
                         tasksService.removeTask(removeIndex);
-                        System.out.println("task removed successfully");
                     } catch (Exception e) {
                         System.out.println(e);
-                        System.out.println("index not available");
                     }
                     break;
 
                 case 4:
-                    List<Tasks> allTask = tasksService.getALlTask();
-                    if (allTask.isEmpty()) {
-                        System.out.println("no task found");
-                    } else {
-                        for (int i = 0; i < allTask.size(); i++) {
-                            Tasks tasks = allTask.get(i);
-                            System.out.println("Task " + (i + 1) + "\nTitle: " + tasks.getTitle() + "\nDescription: " + tasks.getDescription() + "\nCategory: " + tasks.getCategory() + "\nStatus: " + tasks.isCompleted());
-                            System.out.println();
-                        }
-                    }
+                    tasksService.getALlTask();
                     break;
 
                 case 5:

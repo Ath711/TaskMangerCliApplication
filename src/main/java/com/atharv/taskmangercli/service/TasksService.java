@@ -1,31 +1,40 @@
 package com.atharv.taskmangercli.service;
 
 import com.atharv.taskmangercli.beans.Tasks;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
+import com.atharv.taskmangercli.repository.TaskRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class TasksService {
-    private List<Tasks> taskList = new ArrayList<>();
 
-    public void addTask(Tasks tasks){
-        taskList.add(tasks);
+    private final TaskRepository repository;
+    private static final String noRecords = "no record found";
+
+    public TasksService(TaskRepository repository) {
+        this.repository = repository;
     }
 
-    public void markTaskAsCompleted(int index){
-        taskList.get(index).setCompleted(true);
+    public void addTask(int id, Tasks tasks) {
+        repository.insert(id, tasks);
     }
 
-    public void removeTask(int index){
-        taskList.remove(index);
+    public void markTaskAsCompleted(int id) {
+        if (repository.isId(id)) {
+            repository.updateById(id);
+            System.out.println("task marked as completed");
+        }
+        else System.out.println(noRecords);
     }
 
-    public List<Tasks> getALlTask(){
-        return taskList;
+    public void removeTask(int id) {
+        if (repository.isId(id)) {
+            repository.deleteById(id);
+            System.out.println("task removed successfully");
+        }
+        else System.out.println(noRecords);
     }
 
+    public void getALlTask() {
+        repository.readALl();
+    }
 }
